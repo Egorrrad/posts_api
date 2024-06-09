@@ -1,0 +1,118 @@
+directive @maxLengthComment(max: Int!) on FIELD_DEFINITION
+
+type User {
+    id: ID!
+    firstName: String!
+    lastName: String!
+}
+
+type Post {
+    id: ID!
+    allowComment: Boolean!
+    user: User!
+    date: Time!
+
+    text: String!
+    comments: [Comment]
+}
+
+type Comment {
+    id: ID!
+    user: User!
+    text: String! @maxLengthComment(max: 2000)
+    date: Time!
+
+    comments: [Comment]
+}
+
+
+type UsersEdge {
+    node: User
+    cursor: String!
+}
+
+type UsersConnection {
+    edges: [UsersEdge]
+    pageInfo: PageInfo!
+    totalCount: Int
+}
+
+type PageInfo {
+    startCursor: String!
+    endCursor: String!
+    hasNextPage: Boolean!
+}
+
+type PostsEdge {
+    node: Post!
+    cursor: String!
+}
+
+type PostsConnection {
+    edges: [PostsEdge]
+    pageInfo: PageInfo!
+    totalCount: Int
+}
+
+type CommentsEdge {
+    node: Comment!
+    cursor: String!
+}
+
+type CommentsConnection {
+    edges: [CommentsEdge]
+    pageInfo: PageInfo!
+    totalCount: Int
+}
+
+
+type Query {
+    getPost(id: ID!): Post!
+    getUser(id: ID!): User!
+    getComment(id: ID!): Comment!
+
+    usersConnection(first: Int, after: String): UsersConnection!
+    postsConnection(first: Int, after: String): PostsConnection!
+    commentsConnection(first: Int, after: String): CommentsConnection!
+
+}
+
+
+type Mutation {
+    createPost(input: NewPost!): ID!
+    deletePost(id: ID!): Boolean!
+
+    createComment(input: NewComment!): ID!
+    createCommentToComment(input: NewCommentToComment!): ID!
+    deleteComment(id: ID!): Boolean!
+
+    allowComments(input: AllowComment!): Boolean!
+
+    createUser(firstName: String!, lastName: String!): ID!
+
+}
+scalar Time
+
+input NewPost {
+    UserID: ID!
+    Text: String!
+    AllowComment: Boolean!
+}
+
+input NewComment {
+    UserID: ID!
+    PostID: ID!
+    Text: String!
+}
+
+input NewCommentToComment {
+    UserID: ID!
+    CommentID: ID!
+    Text: String!
+}
+
+input AllowComment {
+    UserID: ID!
+    PostID: ID!
+    AllowComment: Boolean!
+}

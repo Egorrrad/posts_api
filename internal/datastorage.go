@@ -30,6 +30,7 @@ func NewDataStorage(storageType string) DataStorage {
 		store := poststore.New()
 		return store
 	case "postgres":
+		// store := poststore.New()
 		return &postgres.PostgresStorage{}
 	default:
 		panic("Unsupported storage type")

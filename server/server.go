@@ -6,7 +6,6 @@ import (
 	"GraphQL_api/internal"
 	"context"
 	"errors"
-	"fmt"
 	"github.com/99designs/gqlgen/graphql"
 	"log"
 	"net/http"
@@ -30,8 +29,6 @@ func main() {
 	}
 
 	store := internal.NewDataStorage(storage)
-
-	fmt.Println(store)
 
 	resolver := &graph.Resolver{
 		Store: store,
@@ -62,4 +59,4 @@ func main() {
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
-//  go run ./server.go
+//  go run ./server/server.go

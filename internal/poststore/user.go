@@ -5,7 +5,7 @@ import (
 )
 
 // CreateUser creates new user in the store and returns id of new user.
-func (ts *InMemoryStorage) CreateUser(firstName string, lastName string) int {
+func (ts *InMemoryStorage) CreateUser(firstName string, lastName string) (int, error) {
 	ts.Lock()
 	defer ts.Unlock()
 
@@ -17,7 +17,7 @@ func (ts *InMemoryStorage) CreateUser(firstName string, lastName string) int {
 
 	ts.users[ts.nextUserId] = user
 	ts.nextUserId++
-	return user.ID
+	return user.ID, nil
 }
 
 // GetUser returns a user from the store, by id.

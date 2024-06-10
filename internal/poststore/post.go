@@ -6,7 +6,7 @@ import (
 )
 
 // CreatePost creates a new post in the store.
-func (ts *InMemoryStorage) CreatePost(user *model.User, text string, date time.Time) int {
+func (ts *InMemoryStorage) CreatePost(user *model.User, text string, date time.Time) (int, error) {
 	ts.Lock()
 	defer ts.Unlock()
 
@@ -20,7 +20,7 @@ func (ts *InMemoryStorage) CreatePost(user *model.User, text string, date time.T
 
 	ts.posts[ts.nextPostId] = post
 	ts.nextPostId++
-	return post.ID
+	return post.ID, nil
 }
 
 // AllowCommentPost allows users to comment on this post.

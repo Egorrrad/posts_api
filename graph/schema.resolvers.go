@@ -35,7 +35,7 @@ func (r *mutationResolver) CreatePost(ctx context.Context, input model.NewPost) 
 		return 0, err
 	}
 	currentTime := time.Now()
-	return r.Store.CreatePost(user, input.Text, currentTime), nil
+	return r.Store.CreatePost(user, input.Text, currentTime)
 }
 
 // DeletePost is the resolver for the deletePost field.
@@ -46,6 +46,14 @@ func (r *mutationResolver) DeletePost(ctx context.Context, id int) (bool, error)
 // CreateComment is the resolver for the createComment field.
 func (r *mutationResolver) CreateComment(ctx context.Context, input model.NewComment) (int, error) {
 	currentTime := time.Now()
+	postId := input.PostID
+	post, err := r.Store.GetPost(postId)
+	if err != nil {
+		return 0, err
+	}
+	if !post.AllowComment {
+		return 0, fmt.Errorf("can't comment this post")
+	}
 	return r.Store.CreateComment(input.UserID, input.PostID, input.Text, currentTime)
 }
 
@@ -71,7 +79,7 @@ func (r *mutationResolver) AllowComments(ctx context.Context, input model.AllowC
 
 // CreateUser is the resolver for the createUser field.
 func (r *mutationResolver) CreateUser(ctx context.Context, firstName string, lastName string) (int, error) {
-	return r.Store.CreateUser(firstName, lastName), nil
+	return r.Store.CreateUser(firstName, lastName)
 }
 
 // Edges is the resolver for the edges field.

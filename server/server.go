@@ -4,8 +4,10 @@ import (
 	"GraphQL_api/graph"
 	"GraphQL_api/graph/model"
 	"GraphQL_api/internal"
+	"GraphQL_api/internal/postgres"
 	"context"
 	"errors"
+	"fmt"
 	"github.com/99designs/gqlgen/graphql"
 	"log"
 	"net/http"
@@ -28,7 +30,14 @@ func main() {
 		storage = defaultStorage
 	}
 
-	store := internal.NewDataStorage(storage)
+	storage = "postgres"
+
+	store, db := internal.NewDataStorage(storage)
+
+	if storage == "postgres" {
+		fmt.Println("Успешный запуск базы данных postgres")
+		defer postgres.CloseDB(db)
+	}
 
 	resolver := &graph.Resolver{
 		Store: store,

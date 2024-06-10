@@ -54,7 +54,13 @@ func (r *mutationResolver) CreateComment(ctx context.Context, input model.NewCom
 	if !post.AllowComment {
 		return 0, fmt.Errorf("can't comment this post")
 	}
-	return r.Store.CreateComment(input.UserID, input.PostID, input.Text, currentTime)
+
+	comment_id, err := r.Store.CreateComment(input.UserID, input.PostID, input.Text, currentTime)
+	if err != nil {
+		return 0, err
+	}
+
+	return comment_id, nil
 }
 
 // CreateCommentToComment is the resolver for the createCommentToComment field.
@@ -274,13 +280,3 @@ type mutationResolver struct{ *Resolver }
 type postsConnectionResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
 type usersConnectionResolver struct{ *Resolver }
-
-// !!! WARNING !!!
-// The code below was going to be deleted when updating resolvers. It has been copied here so you have
-// one last chance to move it out of harms way if you want. There are two reasons this happens:
-//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
-//     it when you're done.
-//   - You have helper methods in this file. Move them out to keep these resolver files clean.
-func (r *queryResolver) GetAllPosts(ctx context.Context) ([]*model.Post, error) {
-	return r.Store.GetAllPosts()
-}

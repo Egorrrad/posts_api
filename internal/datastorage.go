@@ -7,6 +7,7 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/lib/pq"
+	"os"
 	"time"
 )
 
@@ -27,13 +28,41 @@ type DataStorage interface {
 	GetAllUsers() ([]*model.User, error)
 }
 
+const defaultDbPort = "5432"
+const defaultDbHost = "localhost"
+const defaultDbUser = "postgres"
+const defaultDbPassword = ""
+const defaultDbName = "postgres"
+
 func NewDataStorage(storageType string) (DataStorage, *sql.DB) {
 	switch storageType {
 	case "in-memory":
 		store := poststore.New()
 		return store, nil
 	case "postgres":
-		connStr := "host=localhost port=5432 user=api_tester password=testing dbname=postApi sslmode=disable"
+		port, exists := os.LookupEnv("POSTGRES_PORT")
+		if !exists {
+			port = defaultDbPort
+		}
+		host, exists := os.LookupEnv("POSTGRES_HOST")
+		if !exists {
+			port = defaultDbHost
+		}
+		user, exists := os.LookupEnv("POSTGRES_USER")
+		if !exists {
+			port = defaultDbUser
+		}
+		password, exists := os.LookupEnv("POSTGRES_PASSWORD")
+		if !exists {
+			port = defaultDbPassword
+		}
+		dbname, exists := os.LookupEnv("POSTGRES_DB")
+		if !exists {
+			port = defaultDbName
+		}
+		connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
+
+		// connStr := "host=postgres port=5432 user=api_tester password=testing dbname=postApi sslmode=disable"
 		store, err := postgres.OpenDB(connStr)
 		if err != nil {
 			fmt.Println(err)

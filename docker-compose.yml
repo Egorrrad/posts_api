@@ -2,8 +2,17 @@ version: "3.9"
 services:
     post-api:
       build: ./
+      environment:
+        PORT: "8088"
+        STORAGE: "postgres"
+        # STORAGE: "in-memory"
+        POSTGRES_HOST: "postgres"
+        POSTGRES_PORT: "5432"
+        POSTGRES_DB: "postApi"
+        POSTGRES_USER: "api_tester"
+        POSTGRES_PASSWORD: "testing"
       ports:
-        - '8080:8080'
+        - '8080:8088'
       depends_on:
           - postgres
       volumes:

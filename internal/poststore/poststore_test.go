@@ -21,7 +21,8 @@ func TestPostStore_CreateUser(t *testing.T) {
 		testScript func()
 	}{
 		{"create user", func() {
-			id := store.CreateUser("tester", "admin")
+			id, err := store.CreateUser("tester", "admin")
+			assert.NoError(t, err)
 			user, ok := store.users[id]
 
 			assert.Equal(t, true, ok)
@@ -108,7 +109,8 @@ func TestPostStore_GetAllUsers(t *testing.T) {
 			assert.Empty(t, users)
 		}},
 		{"get users in store", func() {
-			id := store.CreateUser("tester001", "admin2")
+			id, err := store.CreateUser("tester001", "admin2")
+			assert.NoError(t, err)
 			users, err := store.GetAllUsers()
 
 			assert.NoError(t, err)
@@ -135,7 +137,8 @@ func TestPostStore_CreatePost(t *testing.T) {
 			user, _ := store.GetUser(1)
 			text := "first post"
 			currentTime := time.Now()
-			id := store.CreatePost(user, text, currentTime)
+			id, err := store.CreatePost(user, text, currentTime)
+			assert.NoError(t, err)
 			post, ok := store.posts[id]
 
 			assert.Equal(t, true, ok)
@@ -229,7 +232,8 @@ func TestPostStore_GetAllPosts(t *testing.T) {
 			user, _ := store.GetUser(1)
 			text := "first post"
 			currentTime := time.Now()
-			id := store.CreatePost(user, text, currentTime)
+			id, err := store.CreatePost(user, text, currentTime)
+			assert.NoError(t, err)
 			posts, err := store.GetAllPosts()
 
 			assert.NoError(t, err)
@@ -252,7 +256,8 @@ func TestPostStore_AllowCommentPost(t *testing.T) {
 		testScript func()
 	}{
 		{"allow comment not user post", func() {
-			id := store.CreateUser("other user", "none")
+			id, err := store.CreateUser("other user", "none")
+			assert.NoError(t, err)
 			user, err := store.GetUser(id)
 			postId := 1
 			ok, err := store.AllowCommentPost(postId, user, false)

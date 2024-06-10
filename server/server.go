@@ -30,8 +30,6 @@ func main() {
 		storage = defaultStorage
 	}
 
-	storage = "postgres"
-
 	store, db := internal.NewDataStorage(storage)
 
 	if storage == "postgres" {

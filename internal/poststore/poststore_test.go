@@ -304,9 +304,10 @@ func TestPostStore_CreateComment(t *testing.T) {
 			assert.Equal(t, id, comment.ID)
 			assert.WithinDuration(t, time.Now(), comment.Date, time.Second)
 			assert.Equal(t, text, comment.Text)
+			assert.Equal(t, postId, comment.PostID)
 
 			post, _ := store.GetPost(postId)
-			assert.Equal(t, comment.ID, post.Comments[0].ID) // ????
+			assert.Equal(t, comment.ID, post.Comments[0].ID)
 		}},
 	}
 	for _, tc := range testCases {
@@ -324,6 +325,7 @@ func TestPostStore_CreateCommentToComment(t *testing.T) {
 		{"create comment", func() {
 			userId := 1
 			commentId := 0
+			postId := 1
 			text := "second comment (to comment)"
 			currentTime := time.Now()
 			id, err := store.CreateCommentToComment(userId, commentId, text, currentTime)
@@ -335,6 +337,7 @@ func TestPostStore_CreateCommentToComment(t *testing.T) {
 			assert.Equal(t, id, comment.ID)
 			assert.WithinDuration(t, time.Now(), comment.Date, time.Second)
 			assert.Equal(t, text, comment.Text)
+			assert.Equal(t, postId, comment.PostID)
 
 			parentComment, _ := store.GetComment(commentId)
 			assert.Equal(t, comment.ID, parentComment.Comments[0].ID) // ????
@@ -363,6 +366,7 @@ func TestPostStore_GetComment(t *testing.T) {
 			assert.Equal(t, id, comment.ID)
 			assert.Equal(t, text, comment.Text)
 			assert.Equal(t, userId, comment.User.ID)
+			assert.Equal(t, postId, comment.PostID)
 
 			post, _ := store.GetPost(postId)
 			assert.Equal(t, comment.ID, post.Comments[0].ID)
@@ -422,6 +426,7 @@ func TestPostStore_GetAllComments(t *testing.T) {
 		{"get comments in store", func() {
 			id := 1
 			userId := 1
+			postId := 1
 			text := "second comment (to comment)"
 			comments, err := store.GetAllComments()
 
@@ -431,6 +436,7 @@ func TestPostStore_GetAllComments(t *testing.T) {
 			assert.Equal(t, id, oneComment.ID)
 			assert.Equal(t, text, oneComment.Text)
 			assert.Equal(t, userId, oneComment.User.ID)
+			assert.Equal(t, postId, oneComment.PostID)
 
 		}},
 		{"get comments in empty store", func() {

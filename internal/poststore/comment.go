@@ -51,10 +51,11 @@ func (ts *InMemoryStorage) CreateCommentToComment(userId int, commentId int, tex
 	}
 
 	comment := &model.Comment{
-		ID:   ts.nextCommentId,
-		User: user,
-		Text: text,
-		Date: date,
+		ID:     ts.nextCommentId,
+		User:   user,
+		Text:   text,
+		Date:   date,
+		PostID: parentComment.PostID,
 	}
 
 	ts.comments[ts.nextCommentId] = comment

@@ -28,11 +28,13 @@ type DataStorage interface {
 	GetAllUsers() ([]*model.User, error)
 }
 
-const defaultDbPort = "5432"
-const defaultDbHost = "localhost"
-const defaultDbUser = "postgres"
-const defaultDbPassword = ""
-const defaultDbName = "postgres"
+const (
+	defaultDbPort     = "5432"
+	defaultDbHost     = "localhost"
+	defaultDbUser     = "postgres"
+	defaultDbPassword = ""
+	defaultDbName     = "postgres"
+)
 
 func NewDataStorage(storageType string) (DataStorage, *sql.DB) {
 	switch storageType {

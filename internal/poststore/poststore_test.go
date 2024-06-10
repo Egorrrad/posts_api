@@ -354,6 +354,7 @@ func TestPostStore_GetComment(t *testing.T) {
 	}{
 		{"get comment in store", func() {
 			id := 0
+			userId := 1
 			postId := 1
 			text := "first comment"
 			comment, err := store.GetComment(id)
@@ -361,9 +362,10 @@ func TestPostStore_GetComment(t *testing.T) {
 			assert.NoError(t, err)
 			assert.Equal(t, id, comment.ID)
 			assert.Equal(t, text, comment.Text)
+			assert.Equal(t, userId, comment.User.ID)
 
 			post, _ := store.GetPost(postId)
-			assert.Equal(t, comment.ID, post.Comments[0].ID) // ????
+			assert.Equal(t, comment.ID, post.Comments[0].ID)
 		}},
 		{"get comment not in store", func() {
 			id := 20
@@ -419,7 +421,7 @@ func TestPostStore_GetAllComments(t *testing.T) {
 	}{
 		{"get comments in store", func() {
 			id := 1
-			userId := 0
+			userId := 1
 			text := "second comment (to comment)"
 			comments, err := store.GetAllComments()
 

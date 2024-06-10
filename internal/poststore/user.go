@@ -10,7 +10,7 @@ func (ts *InMemoryStorage) CreateUser(firstName string, lastName string) (int, e
 	defer ts.Unlock()
 
 	user := &model.User{
-		ID:        ts.nextPostId,
+		ID:        ts.nextUserId,
 		FirstName: firstName,
 		LastName:  lastName,
 	}

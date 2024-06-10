@@ -48,14 +48,14 @@ func (s *PostgresStorage) CreateCommentToComment(userId int, commentId int, text
 }
 
 func (s *PostgresStorage) GetComment(id int) (*model.Comment, error) {
-	stmt := `SELECT id, user_id, text, created_at FROM comments WHERE id = $1`
+	stmt := `SELECT id, user_id, post_id, text, created_at FROM comments WHERE id = $1`
 
 	row := s.DB.QueryRow(stmt, id)
 
 	comment := &model.Comment{}
 
 	var userId int
-	err := row.Scan(&comment.ID, &userId, &comment.Text, &comment.Date)
+	err := row.Scan(&comment.ID, &userId, &comment.PostID, &comment.Text, &comment.Date)
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -90,7 +90,7 @@ func (s *PostgresStorage) DeleteComment(id int) (bool, error) {
 }
 
 func (s *PostgresStorage) GetAllComments() ([]*model.Comment, error) {
-	stmt := `SELECT id, user_id, text, created_at FROM comments`
+	stmt := `SELECT id, user_id, post_id, text, created_at FROM comments`
 
 	rows, err := s.DB.Query(stmt)
 	if err != nil {
@@ -104,7 +104,7 @@ func (s *PostgresStorage) GetAllComments() ([]*model.Comment, error) {
 	for rows.Next() {
 		comment := &model.Comment{}
 		var userId int
-		err = rows.Scan(&comment.ID, &userId, &comment.Text, &comment.Date)
+		err = rows.Scan(&comment.ID, &userId, &comment.PostID, &comment.Text, &comment.Date)
 
 		if err != nil {
 			return nil, err

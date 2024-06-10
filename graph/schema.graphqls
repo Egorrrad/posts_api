@@ -18,6 +18,7 @@ type Post {
 
 type Comment {
     id: ID!
+    postId: ID!
     user: User!
     text: String! @maxLengthComment(max: 2000)
     date: Time!
@@ -91,6 +92,11 @@ type Mutation {
     createUser(firstName: String!, lastName: String!): ID!
 
 }
+
+type Subscription {
+    commentPublished(postId: ID!): Comment!
+}
+
 scalar Time
 
 input NewPost {

@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/99designs/gqlgen/graphql"
+	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"log"
 	"net/http"
 	"os"
@@ -12,6 +13,7 @@ import (
 	"posts_api/graph/model"
 	"posts_api/internal"
 	"posts_api/internal/postgres"
+	"time"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
@@ -38,7 +40,9 @@ func main() {
 	}
 
 	resolver := &graph.Resolver{
-		Store: store,
+		Store:       store,
+		Comments:    make(map[int][]chan *model.Comment),
+		NewComments: make(chan *model.Comment, 100),
 	}
 
 	config := graph.Config{Resolvers: resolver}
@@ -57,7 +61,14 @@ func main() {
 		return next(ctx)
 	}
 
+	go resolver.HandleNewComments()
+
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(config))
+
+	srv.AddTransport(transport.Websocket{
+		KeepAlivePingInterval: 10 * time.Second,
+	})
+
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	http.Handle("/query", srv)
 

@@ -21,10 +21,11 @@ func (ts *InMemoryStorage) CreateComment(userId int, postId int, text string, da
 	}
 
 	comment := &model.Comment{
-		ID:   ts.nextCommentId,
-		User: user,
-		Text: text,
-		Date: date,
+		ID:     ts.nextCommentId,
+		User:   user,
+		PostID: postId,
+		Text:   text,
+		Date:   date,
 	}
 
 	ts.comments[ts.nextCommentId] = comment

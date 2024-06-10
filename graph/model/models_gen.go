@@ -14,6 +14,7 @@ type AllowComment struct {
 
 type Comment struct {
 	ID       int        `json:"id"`
+	PostID   int        `json:"postId"`
 	User     *User      `json:"user"`
 	Text     string     `json:"text"`
 	Date     time.Time  `json:"date"`
@@ -67,6 +68,9 @@ type PostsEdge struct {
 }
 
 type Query struct {
+}
+
+type Subscription struct {
 }
 
 type User struct {

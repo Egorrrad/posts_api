@@ -55,12 +55,19 @@ func (r *mutationResolver) CreateComment(ctx context.Context, input model.NewCom
 		return 0, fmt.Errorf("can't comment this post")
 	}
 
-	comment_id, err := r.Store.CreateComment(input.UserID, input.PostID, input.Text, currentTime)
+	commentId, err := r.Store.CreateComment(input.UserID, input.PostID, input.Text, currentTime)
 	if err != nil {
 		return 0, err
 	}
 
-	return comment_id, nil
+	newComment, err := r.Store.GetComment(commentId)
+	if err != nil {
+		return 0, err
+	}
+
+	r.NewComments <- newComment
+
+	return commentId, nil
 }
 
 // CreateCommentToComment is the resolver for the createCommentToComment field.
@@ -244,6 +251,34 @@ func (r *queryResolver) CommentsConnection(ctx context.Context, first *int, afte
 	}, nil
 }
 
+// CommentPublished is the resolver for the commentPublished field.
+func (r *subscriptionResolver) CommentPublished(ctx context.Context, postID int) (<-chan *model.Comment, error) {
+	r.Mu.Lock()
+	defer r.Mu.Unlock()
+
+	channel := make(chan *model.Comment, 10)
+	_, ok := r.Comments[postID]
+	if !ok {
+		r.Comments[postID] = make([]chan *model.Comment, 0)
+	}
+	r.Comments[postID] = append(r.Comments[postID], channel)
+
+	go func() {
+		<-ctx.Done()
+		r.Mu.Lock()
+		defer r.Mu.Unlock()
+		for i, c := range r.Comments[postID] {
+			if c == channel {
+				r.Comments[postID] = append(r.Comments[postID][:i], r.Comments[postID][i+1:]...)
+				close(c)
+				break
+			}
+		}
+	}()
+
+	return channel, nil
+}
+
 // Edges is the resolver for the edges field.
 func (r *usersConnectionResolver) Edges(ctx context.Context, obj *model.UsersConnection) ([]*model.UsersEdge, error) {
 	edges := make([]*model.UsersEdge, obj.To-obj.From)
@@ -272,6 +307,9 @@ func (r *Resolver) PostsConnection() PostsConnectionResolver { return &postsConn
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
+// Subscription returns SubscriptionResolver implementation.
+func (r *Resolver) Subscription() SubscriptionResolver { return &subscriptionResolver{r} }
+
 // UsersConnection returns UsersConnectionResolver implementation.
 func (r *Resolver) UsersConnection() UsersConnectionResolver { return &usersConnectionResolver{r} }
 
@@ -279,4 +317,5 @@ type commentsConnectionResolver struct{ *Resolver }
 type mutationResolver struct{ *Resolver }
 type postsConnectionResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
+type subscriptionResolver struct{ *Resolver }
 type usersConnectionResolver struct{ *Resolver }

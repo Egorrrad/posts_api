@@ -1,10 +1,10 @@
 package postgres
 
 import (
-	"GraphQL_api/graph/model"
 	"database/sql"
 	_ "encoding/json"
 	"errors"
+	"posts_api/graph/model"
 	"time"
 )
 

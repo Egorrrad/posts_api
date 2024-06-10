@@ -1,13 +1,13 @@
 package internal
 
 import (
-	"GraphQL_api/graph/model"
-	"GraphQL_api/internal/postgres"
-	"GraphQL_api/internal/poststore"
 	"database/sql"
 	"fmt"
 	_ "github.com/lib/pq"
 	"os"
+	"posts_api/graph/model"
+	"posts_api/internal/postgres"
+	"posts_api/internal/poststore"
 	"time"
 )
 

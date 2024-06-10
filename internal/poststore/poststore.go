@@ -1,7 +1,7 @@
 package poststore
 
 import (
-	"GraphQL_api/graph/model"
+	"posts_api/graph/model"
 	"sync"
 )
 

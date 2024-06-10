@@ -1,7 +1,7 @@
 package graph
 
 import (
-	"GraphQL_api/internal"
+	"posts_api/internal"
 )
 
 // This file will not be regenerated automatically.

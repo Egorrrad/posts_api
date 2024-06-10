@@ -3,12 +3,12 @@
 package graph
 
 import (
-	"GraphQL_api/graph/model"
 	"bytes"
 	"context"
 	"embed"
 	"errors"
 	"fmt"
+	"posts_api/graph/model"
 	"strconv"
 	"sync"
 	"sync/atomic"

@@ -1,8 +1,8 @@
 package poststore
 
 import (
-	"GraphQL_api/graph/model"
 	"fmt"
+	"posts_api/graph/model"
 )
 
 // UserExists checks user in the store, by id.

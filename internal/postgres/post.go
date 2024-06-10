@@ -1,9 +1,9 @@
 package postgres
 
 import (
-	"GraphQL_api/graph/model"
 	"database/sql"
 	"errors"
+	"posts_api/graph/model"
 	"time"
 )
 

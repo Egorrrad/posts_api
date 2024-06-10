@@ -1,10 +1,6 @@
 package main
 
 import (
-	"GraphQL_api/graph"
-	"GraphQL_api/graph/model"
-	"GraphQL_api/internal"
-	"GraphQL_api/internal/postgres"
 	"context"
 	"errors"
 	"fmt"
@@ -12,6 +8,10 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"posts_api/graph"
+	"posts_api/graph/model"
+	"posts_api/internal"
+	"posts_api/internal/postgres"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
